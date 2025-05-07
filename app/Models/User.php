@@ -28,6 +28,15 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+    protected $fillable = [
+        'name',
+        'username',
+        'email',
+        'password',
+        'agent_flag',
+    ];
+
+
 
     /**
      * Get the attributes that should be cast.

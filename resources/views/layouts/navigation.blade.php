@@ -3,27 +3,38 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex">
-                <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}">
                         <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
                     </a>
                 </div>
-
-                <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    @if(auth()->check() && auth()->user()->agent_flag == 1)
+                        <x-nav-link :href="route('agent.dashboard')" :active="request()->routeIs('agent.dashboard')">
+                            {{ __('Agent Dashboard') }}
+                        </x-nav-link>
+                    @endif
+                    
                 </div>
+                
             </div>
 
-            <!-- Settings Dropdown -->
+            @auth
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                            <div>{{ Auth::user()->name }}</div>
+                            <div class="flex items-center gap-2">
+                                <span>{{ Auth::user()->name }}</span>
+                                @if(Auth::user()->agent_flag)
+                                    <span class="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">Agent</span>
+                                @else
+                                    <span class="text-xs bg-gray-100 text-gray-800 px-2 py-0.5 rounded">User</span>
+                                @endif
+                            </div>
 
                             <div class="ms-1">
                                 <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -37,8 +48,6 @@
                         <x-dropdown-link :href="route('profile.edit')">
                             {{ __('Profile') }}
                         </x-dropdown-link>
-
-                        <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
 
@@ -51,8 +60,8 @@
                     </x-slot>
                 </x-dropdown>
             </div>
+            @endauth
 
-            <!-- Hamburger -->
             <div class="-me-2 flex items-center sm:hidden">
                 <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
@@ -73,9 +82,17 @@
         </div>
 
         <!-- Responsive Settings Options -->
+        @auth
         <div class="pt-4 pb-1 border-t border-gray-200">
             <div class="px-4">
-                <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
+                <div class="font-medium text-base text-gray-800 flex items-center gap-2">
+                    <span>{{ Auth::user()->name }}</span>
+                    @if(Auth::user()->agent_flag)
+                        <span class="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">Agent</span>
+                    @else
+                        <span class="text-xs bg-gray-100 text-gray-800 px-2 py-0.5 rounded">User</span>
+                    @endif
+                </div>
                 <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
             </div>
 
@@ -96,5 +113,6 @@
                 </form>
             </div>
         </div>
+        @endauth
     </div>
 </nav>
